@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <item android:title="@string/filters">
+        <menu>
+            <item
+                android:id="@+id/filter_by_learning"
+                android:icon="@drawable/ic_menu_camera"
+                android:title="@string/filter_by_learning" />
+            <item
+                android:id="@+id/filter_by_learned"
+                android:icon="@drawable/ic_menu_gallery"
+                android:title="@string/filter_by_learned" />
+            <item
+                android:id="@+id/filter_by_added"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="@string/filter_by_added" />
+            <item
+                android:id="@+id/filter_by_date_range"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="@string/filter_by_date_range" />
+            <item
+                android:id="@+id/show_all"
+                android:icon="@drawable/ic_menu_manage"
+                android:title="@string/show_all" />
+        </menu>
+    </item>
+
+    <item android:title="@string/other">
+        <menu>
+            <item
+                android:id="@+id/nav_logout"
+                android:icon="@drawable/ic_menu_share"
+                android:title="@string/logout" />
+        </menu>
+    </item>
+
+</menu>
