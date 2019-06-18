@@ -143,6 +143,8 @@ public class WordsActivity extends AppCompatActivity
                             case R.id.item_delete:
                                 myRef.child("words").child(words.get(currentPosition).getKey()).removeValue();
                                 break;
+                            case R.id.item_shared:
+                                ShareWord(currentPosition);
                         }
                         return true;
                     }
@@ -151,6 +153,30 @@ public class WordsActivity extends AppCompatActivity
                 menu.show();
             }
         }));
+    }
+
+    private void ShareWord(int currentPosition) {
+        Word word = words.get(currentPosition);
+        Intent sendIntent = new Intent();
+        sendIntent.setAction(Intent.ACTION_SEND);
+        String text = GetShareText(word);
+        sendIntent.putExtra(Intent.EXTRA_TEXT, text);
+        sendIntent.setType("text/plain");
+        startActivity(Intent.createChooser(sendIntent, getResources().getText(R.string.send_to)));
+    }
+
+    private String GetShareText(Word word) {
+        switch (word.getStatus()){
+            case WordStatus.ADDED:
+                return "Hey I going to learn this word '" + word.getName() + "'";
+            case WordStatus.LEARNED:
+                return "Hey I have learned this word '" + word.getName() + "'";
+            case WordStatus.LEARNING:
+                return "Hey I am learning this word '" + word.getName() + "'";
+            default:
+                return "";
+
+        }
     }
 
     private void getProthoUrl() {

@@ -21,4 +21,9 @@
         app:showAsAction="ifRoom|withText"
         android:title="@string/delete"
         android:visible="true"/>
+    <item
+        android:id="@+id/item_shared"
+        app:showAsAction="ifRoom|withText"
+        android:title="@string/shared"
+        android:visible="true"/>
 </menu>
