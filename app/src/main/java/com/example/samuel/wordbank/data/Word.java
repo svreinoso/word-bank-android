@@ -2,22 +2,23 @@ package com.example.samuel.wordbank.data;
 
 import com.google.firebase.database.Exclude;
 
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Map;
 
 public class Word {
     private String userId;
-    private String name;
+    private String word;
     private String translate;
     private String meaning;
     private String key;
-    private int status;
+    private String status;
     private long createdDate;
 
-    public Word(String userId, String name, int status, long createdDate, String translate,
+    public Word(String userId, String name, String status, long createdDate, String translate,
                 String meaning, String key) {
         this.userId = userId;
-        this.name = name;
+        this.word = name;
         this.status = status;
         this.createdDate = createdDate;
         this.meaning = meaning;
@@ -31,7 +32,7 @@ public class Word {
     @Exclude
     public Map<String, Object> toMap() {
         HashMap<String, Object> result = new HashMap<>();
-        result.put("name", name);
+        result.put("word", word);
         result.put("meaning", meaning);
         result.put("translate", translate);
         result.put("status", status);
@@ -82,19 +83,32 @@ public class Word {
         this.userId = userId;
     }
 
-    public String getName() {
-        return name;
+    public String getWord() {
+        return word;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setWord(String word) {
+        this.word = word;
     }
 
-    public int getStatus() {
+    public String getStatus() {
         return status;
     }
 
-    public void setStatus(int status) {
+    public void setStatus(String status) {
         this.status = status;
     }
+
+    public static Comparator<Word> comparator = new Comparator<Word>() {
+
+        public int compare(Word s1, Word s2) {
+            Long StudentName1 = s1.getCreatedDate();
+            Long StudentName2 = s2.getCreatedDate();
+
+            //ascending order
+//            return StudentName1.compareTo(StudentName2);
+
+            //descending order
+            return StudentName2.compareTo(StudentName1);
+        }};
 }

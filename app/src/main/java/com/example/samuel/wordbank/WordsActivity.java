@@ -42,6 +42,7 @@ import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.List;
 
 public class WordsActivity extends AppCompatActivity
@@ -112,7 +113,7 @@ public class WordsActivity extends AppCompatActivity
             @Override
             public void onClick(View view, int position) {
                 Word word = words.get(position);
-                Toast.makeText(getApplicationContext(), word.getName() + " is selected!", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), word.getWord() + " is selected!", Toast.LENGTH_SHORT).show();
             }
 
             @Override
@@ -167,11 +168,11 @@ public class WordsActivity extends AppCompatActivity
     private String GetShareText(Word word) {
         switch (word.getStatus()){
             case WordStatus.ADDED:
-                return "Hey I going to learn this word '" + word.getName() + "'";
+                return "Hey I going to learn this word '" + word.getWord() + "'";
             case WordStatus.LEARNED:
-                return "Hey I have learned this word '" + word.getName() + "'";
+                return "Hey I have learned this word '" + word.getWord() + "'";
             case WordStatus.LEARNING:
-                return "Hey I am learning this word '" + word.getName() + "'";
+                return "Hey I am learning this word '" + word.getWord() + "'";
             default:
                 return "";
 
@@ -184,24 +185,29 @@ public class WordsActivity extends AppCompatActivity
         Picasso.get().load(uri.toString() + "?type=large").into(iv);
     }
 
-    private void changeStatus(int newStatus, int positio){
+    private void changeStatus(String newStatus, int positio){
         Word word = words.get(positio);
 
-        myRef.child("words").child(word.getKey()).child("status").setValue(newStatus);
+        myRef.child("users/"+ currentUser.getUid() +"/words").child(word.getKey()).child("status").setValue(newStatus);
     }
 
     private void loadData(){
-        Log.i("Aaaaaaaaa", "users/"+ currentUser.getUid() +"/words/");
         myRef.child("users/"+ currentUser.getUid() +"/words").orderByChild("createdDate")
                 .addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
 
                 words = new ArrayList<>();
-                for (DataSnapshot noteDataSnapshot : dataSnapshot.getChildren()) {
-//                    Word word = noteDataSnapshot.getValue(Word.class);
-//                    words.add(word);
+                for (DataSnapshot ds : dataSnapshot.getChildren()) {
+                    try {
+                        Word word = ds.getValue(Word.class);
+                        words.add(word);
+                    } catch (Exception ex) {
+                        Log.e(TAG, "Error parsing word: " + ds.child("word").toString());
+                    }
                 }
+                Collections.sort(words, Word.comparator);
+
                 wordsFiltered = words;
                 mAdapter = new MyAdapter(wordsFiltered, WordsActivity.this);
                 mRecyclerView.setAdapter(mAdapter);
@@ -215,15 +221,14 @@ public class WordsActivity extends AppCompatActivity
         });
     }
 
-    private void filterByStatus(int status) {
+    private void filterByStatus(String status) {
 
         wordsFiltered = new ArrayList<Word>();
-        if(status == 0){
+        if(status == "0"){
             wordsFiltered = words;
         }else {
-
             for (Word word : words) {
-                if(word.getStatus() == status){
+                if(word.getStatus().equals(status)){
                     wordsFiltered.add(word);
                 }
             }
@@ -356,7 +361,7 @@ public class WordsActivity extends AppCompatActivity
             filterByStatus(WordStatus.ADDED);
         } else if (id == R.id.show_all) {
             showMessage("Showing All");
-            filterByStatus(0);
+            filterByStatus("0");
         }else if (id == R.id.filter_by_date_range) {
            getFilterdates();
         } else if (id == R.id.nav_logout) {

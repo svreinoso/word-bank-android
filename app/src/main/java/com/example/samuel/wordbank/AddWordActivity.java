@@ -4,7 +4,7 @@ import android.content.Intent;
 import androidx.annotation.NonNull;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputLayout;
-import androidx.core.view.GravityCompat;
+
 import androidx.appcompat.app.AppCompatActivity;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -33,7 +33,7 @@ public class AddWordActivity extends AppCompatActivity {
     private FirebaseAuth mAuth;
     private FirebaseUser currentUser;
     private String currentKey;
-    private int currentStatus;
+    private String currentStatus;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -60,12 +60,11 @@ public class AddWordActivity extends AppCompatActivity {
             return;
         }
 
-        Toast.makeText(this, currentKey, Toast.LENGTH_LONG).show();
-        database.getReference().child("words").child(currentKey).addValueEventListener(new ValueEventListener() {
+        database.getReference().child("users/"+ currentUser.getUid() +"/words").child(currentKey).addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot dataSnapshot) {
                 Word word = dataSnapshot.getValue(Word.class);
-                etname.getEditText().setText(word.getName());
+                etname.getEditText().setText(word.getWord());
                 etMeaning.getEditText().setText(word.getMeaning());
                 etTranslate.getEditText().setText(word.getTranslate());
                 currentStatus = word.getStatus();
@@ -91,10 +90,10 @@ public class AddWordActivity extends AppCompatActivity {
         }
 
         String key = "";
-        int status = WordStatus.ADDED;
+        String status = WordStatus.ADDED;
 
         if(TextUtils.isEmpty(currentKey)){
-            key = myRef.child("words").push().getKey();
+            key = myRef.child("users/"+ currentUser.getUid() +"/words/").push().getKey();
         }else {
             status = currentStatus;
             key = currentKey;
@@ -104,7 +103,7 @@ public class AddWordActivity extends AppCompatActivity {
                 translate, meaning, key);
         Map<String, Object> wordValues = word.toMap();
         Map<String, Object> childUpdates = new HashMap<>();
-        childUpdates.put("/words/" + key, wordValues);
+        childUpdates.put("users/"+ currentUser.getUid() +"/words/" + key, wordValues);
         myRef.updateChildren(childUpdates);
 
         Toast.makeText(AddWordActivity.this, "Word Saved", Toast.LENGTH_SHORT).show();

@@ -50,7 +50,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
         Word movie = moviesList.get(position);
-        holder.title.setText(movie.getName());
+        holder.title.setText(movie.getWord());
         holder.genre.setText(getStringStatus(movie.getStatus()));
         holder.year.setText(getStringDate(movie.getCreatedDate()));
         holder.meaning.setText(movie.getMeaning());
@@ -77,10 +77,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
         return df.format(date);
     }
 
-    private String getStringStatus(int status) {
+    private String getStringStatus(String status) {
         switch (status){
-            case WordStatus.ADDED:
-                return context.getString(R.string.added);
             case WordStatus.LEARNING:
                 return context.getString(R.string.learning);
             case WordStatus.LEARNED:
